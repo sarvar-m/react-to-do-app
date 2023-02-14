@@ -1,25 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import TaskForm from "./TaskForm";
+import TasksList from "./TasksList";
+import "./App.css";
 
-function App() {
+const App = () => {
+  const [tasks, setTasks] = useState([]);
+  const [currentTask, setCurrentTask] = useState(null);
+
+  const addTask = (name) => {
+    setTasks([...tasks, { id: Date.now(), name, completed: false }]);
+  };
+
+  const completeTask = (id) => {
+    setTasks(
+      tasks.map((task) =>
+        task.id === id ? { ...task, completed: !task.completed } : task
+      )
+    );
+  };
+
+  const deleteTask = (id) => {
+    setTasks(tasks.filter((task) => task.id !== id));
+  };
+
+  const updateTask = (task) => {
+    setTasks(
+      tasks.map((t) => (t.id === task.id ? { ...t, name: task.name } : t))
+    );
+    setCurrentTask(null);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <TaskForm
+        addTask={addTask}
+        updateTask={updateTask}
+        currentTask={currentTask}
+      />
+      <TasksList
+        tasks={tasks}
+        setTasks={setTasks}
+        completeTask={completeTask}
+        deleteTask={deleteTask}
+        updateTask={updateTask}
+      />
     </div>
   );
-}
+};
 
 export default App;
